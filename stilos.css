@@ -1,0 +1,38 @@
+/* Estilo pagina completa */
+body{
+    background-color: #DEC1E0;
+    font-family: 'Manrope', sans-serif;
+}
+
+/* Estilo encabezado*/
+#zona1 {
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilo bloque filtros y mapa */
+.bloque {
+    float: left;
+    padding: 20px;
+    text-align: center;
+    height: 150 px;
+}
+
+.bloque1 {
+    background-color: beige;
+    width: 30%;
+}
+
+.bloque2 {
+    width: 70%;
+}
+
+footer {
+    clear: both;
+    color: black;
+    text-align: center;
+    padding: 10px;
+}
