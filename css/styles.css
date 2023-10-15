@@ -1,0 +1,14 @@
+
+#map {
+    width: 70%; /* Adjust the width of the map as needed */
+    height: 80vh; /* Adjust the map height as needed */
+    float: right;
+}
+
+/* Style for the filters box on the left */
+#filters {
+    width: 30%; /* Adjust the width of the filters box as needed */
+    height: 80vh; /* Match the map height */
+    background-color: #f1f1f1;
+    float: left;
+}

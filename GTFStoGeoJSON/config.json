@@ -1,0 +1,10 @@
+{
+    "agencies": [
+      {
+        "agency_key": "myAgency",
+        "path": "gtfs/"
+      }
+    ],
+    "coordinatePrecision": 5,
+    "outputFormat": "lines-and-stops"
+  }
