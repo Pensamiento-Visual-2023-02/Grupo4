@@ -16,11 +16,11 @@ loadAndDisplayGTFSLines(map);
 function createMap() {
     var map = L.map('map').setView([-33.4489, -70.6693], 10);
 
-    // Add the dark-themed tile layer
-    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg', {
-        maxZoom: 19,
+    var whiteLayer = L.tileLayer('./white_background.png', {
+        maxZoom: 17,
     }).addTo(map);
-
+    
+    whiteLayer.setZIndex(1); // Ensure the white layer is on top
     
 
     return map;
@@ -38,7 +38,7 @@ function addBoundaryLayer(map) {
             var comunaLayer = L.geoJSON(data, {
                 style: {
                     fill: false,   // No fill color
-                    color: 'blue', // Boundary color
+                    color: 'black', // Boundary color
                     weight: 2,     // Boundary line weight
                 },
             });
