@@ -30,7 +30,7 @@ function createMap() {
 
 // Function to add the boundary layer (comuna_limits)
 function addBoundaryLayer(map) {
-    return fetch('data/santiago/all.geojson') 
+    return fetch('data/region_metropolitana_de_santiago/all.geojson') 
         .then(function (response) {
             return response.json();
         })
@@ -165,8 +165,7 @@ function clickeableComuna(map, comunaLayer){
             
             if (isWithinBoundary) {
                 var comunaName = layer.feature.properties.NOM_COM; // Get the comuna name
-                alert('Clicked on Comuna: ' + comunaName);
-                
+                window.location.href = `comuna.html?comuna=${comunaName}`;
             }
         });
     });
