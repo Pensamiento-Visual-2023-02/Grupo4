@@ -2,26 +2,35 @@
 var map = createMap();
 
 // Add the boundary layer (comuna_limits)
-addBoundaryLayer(map);
+addBoundaryLayer(map).then(function (comunaLayer) {
+    highlightComunaArea(map, comunaLayer);
+    clickeableComuna(map, comunaLayer);
+    
+});
 
 // Load and display GTFS lines
 loadAndDisplayGTFSLines(map);
+
 
 // Function to create the map
 function createMap() {
     var map = L.map('map').setView([-33.4489, -70.6693], 10);
 
     // Add the dark-themed tile layer
-    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg', {
         maxZoom: 19,
     }).addTo(map);
+
+    
 
     return map;
 }
 
+
+
 // Function to add the boundary layer (comuna_limits)
 function addBoundaryLayer(map) {
-    fetch('data/comuna_limits/all.geojson') 
+    return fetch('data/santiago/all.geojson') 
         .then(function (response) {
             return response.json();
         })
@@ -29,21 +38,14 @@ function addBoundaryLayer(map) {
             var comunaLayer = L.geoJSON(data, {
                 style: {
                     fill: false,   // No fill color
-                    color: 'black', // Boundary color
-                    weight: 0.5,     // Boundary line weight
+                    color: 'blue', // Boundary color
+                    weight: 2,     // Boundary line weight
                 },
             });
 
-            // Add a click event listener to the comuna layer
-            comunaLayer.on('click', function (e) {
-                var comuna = e.layer; 
-                console.log(comuna);
-                var comunaName = comuna.feature.properties.NOM_COM; 
-                // Example: Display the comuna name in an alert
-                console.log('You clicked on ' + comunaName);
-            });
-
             comunaLayer.addTo(map); 
+
+            return comunaLayer;
 
         });
 }
@@ -84,16 +86,17 @@ function createLineLayer(features) {
     return L.geoJSON(features, {
         style: function (feature) {
             switch (feature.properties.agency_id) {
+                case 'MT':
+                    return { color: 'yellow', weight: 0 };
                 case 'M':
                     return { color: 'red', weight: 0 };
                 case 'RM':
                     return { color: 'green', weight: 0 };
-                case 'MT':
-                    return { color: 'blue', weight: 0 };
             }
         }
     });
 }
+
 
 // Function to update line visibility based on checkbox state
 function updateLineVisibility(checkboxId, lineType, lineLayer) {
@@ -101,7 +104,70 @@ function updateLineVisibility(checkboxId, lineType, lineLayer) {
 
     lineLayer.eachLayer(function (layer) {
         if (layer.feature.properties.agency_id === lineType) {
-            layer.setStyle({ weight: checkbox.checked ? 2 : 0 }); // Toggle visibility
+            layer.setStyle({ weight: checkbox.checked ? 1 : 0 }); // Toggle visibility
         }
+    });
+}
+
+
+function highlightComunaArea(map, comunaLayer){
+    var highlightedLayer = null;
+    map.on('mousemove', function (e) {
+        // Get the clicked coordinates
+        var latlng = e.latlng;
+
+        var isWithinAnyBoundary = false;
+
+        comunaLayer.eachLayer(function (layer) {
+            // Check if the mouse pointer is within the comuna boundary
+            var isWithinBoundary = turf.booleanPointInPolygon(
+                [latlng.lng, latlng.lat],
+                layer.toGeoJSON()
+            );
+
+            if (isWithinBoundary) {
+                isWithinAnyBoundary = true;
+                // Highlight the layer by changing the boundary color
+                layer.setStyle({
+                    weight: 4
+                });
+                highlightedLayer = layer;
+            } else {
+                // Restore default boundary color for other layers
+                layer.setStyle({
+                    weight: 2
+                });
+            }
+    });
+
+    // Reset the highlighted layer if the mouse is not within any boundary
+    if (!isWithinAnyBoundary && highlightedLayer) {
+        highlightedLayer.setStyle({
+            weight: 0.5
+        });
+        highlightedLayer = null;
+    }
+
+    });
+}
+
+function clickeableComuna(map, comunaLayer){
+    map.on('click', function (e) {
+        // Get the clicked coordinates
+        var latlng = e.latlng;
+    
+        comunaLayer.eachLayer(function (layer) {
+            // Check if the clicked point is within the comuna boundary
+            var isWithinBoundary = turf.booleanPointInPolygon(
+                [latlng.lng, latlng.lat],
+                layer.toGeoJSON()
+            );
+            
+            if (isWithinBoundary) {
+                var comunaName = layer.feature.properties.NOM_COM; // Get the comuna name
+                alert('Clicked on Comuna: ' + comunaName);
+                
+            }
+        });
     });
 }
