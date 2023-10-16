@@ -1,14 +1,46 @@
+/* Estilo pagina completa */
+body{
+    background-color: aliceblue;
+    font-family: 'Manrope', sans-serif;
+}
+/* Estilo encabezado*/
+/*
+#titulo {
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #1b2b45;
+    font: bold;
+    color: #f0f8ff;
+}*/
 
 #map {
-    width: 70%; /* Adjust the width of the map as needed */
+    width: 80%; /* Adjust the width of the map as needed */
     height: 80vh; /* Adjust the map height as needed */
     float: right;
+    margin: 20px;
 }
 
 /* Style for the filters box on the left */
+
 #filters {
-    width: 30%; /* Adjust the width of the filters box as needed */
+    width: 15%; /* Adjust the width of the filters box as needed */
     height: 80vh; /* Match the map height */
-    background-color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #DEC1E0;
     float: left;
-}
+    margin: 10px;
+    border-style: none;
+    border-radius: 20px;
+
+    
+} 
+
+
+
+    
