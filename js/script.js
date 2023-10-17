@@ -14,10 +14,15 @@ loadAndDisplayGTFSLines(map);
 
 // Function to create the map
 function createMap() {
-    var map = L.map('map').setView([-33.4489, -70.6693], 10);
+    var map = L.map('map', {
+        center: [-33.6, -70.6693],
+        zoom: 8.5,
+        zoomControl: false, // Disable zoom control buttons
+    });
 
-    var whiteLayer = L.tileLayer('./white_background.png', {
+    var whiteLayer = L.tileLayer('./map_background.png', {
         maxZoom: 17,
+        scrollY: false,
     }).addTo(map);
     
     whiteLayer.setZIndex(1); // Ensure the white layer is on top
@@ -87,11 +92,11 @@ function createLineLayer(features) {
         style: function (feature) {
             switch (feature.properties.agency_id) {
                 case 'MT':
-                    return { color: 'yellow', weight: 0 };
+                    return { color: '#1b2b45', weight: 0 };
                 case 'M':
-                    return { color: 'red', weight: 0 };
+                    return { color: '#dd0f0f', weight: 0 };
                 case 'RM':
-                    return { color: 'green', weight: 0 };
+                    return { color: '#fe9553', weight: 0 };
             }
         }
     });
@@ -170,3 +175,6 @@ function clickeableComuna(map, comunaLayer){
         });
     });
 }
+
+
+
