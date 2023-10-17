@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Page</title>
+</head>
+<body>
+    <h1>New Page</h1>
+    <p>Comuna: <span id="comuna"></span></p>
+    <a href="index.html">Back to Main Map</a>
+</body>
+<script>
+    // Get the comuna parameter from the URL and display it
+    const urlParams = new URLSearchParams(window.location.search);
+    const comuna = urlParams.get('comuna');
+    if (comuna) {
+        document.getElementById('comuna').textContent = comuna;
+    }
+</script>
+</html>
