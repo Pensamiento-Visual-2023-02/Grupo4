@@ -1,0 +1,12 @@
+body{
+    background-color: aliceblue;
+    font-family: 'Manrope', sans-serif;
+}
+
+#titulo{
+    background-color: #DEC1E0;
+    color: black;
+    padding: 20px;
+    clear: both;
+    text-align: center;
+}
