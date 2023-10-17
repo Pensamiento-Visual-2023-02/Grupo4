@@ -142,6 +142,7 @@ function highlightComunaArea(map, comunaLayer){
                 layer.setStyle({
                     weight: 2
                 });
+                
             }
     });
 

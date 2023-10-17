@@ -58,7 +58,7 @@ body{
 
 /* Parte bajo el mapa*/
 #titulo {
-    background-color: #DEC1E0;
+    background-color: #f0ced1;
     color: black;
     padding: 20px;
     clear: both;
@@ -69,5 +69,6 @@ body{
     text-align: center;
     padding: 10px;
     text-size-adjust: 30px;
+    background-color: white;
 }
     
