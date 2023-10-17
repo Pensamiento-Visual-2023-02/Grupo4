@@ -10,17 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope&display=swap" rel="stylesheet">
 </head>
 <body>
-    
-   <div id="filters">
+
+   <div id="filters" class="bloque">
+        <h2>Santiago en Datos</h2>
         <label><input type="checkbox" id="metroCheckbox" > Metro</label>
         <label><input type="checkbox" id="busCheckbox" > Bus</label>
-        <label><input type="checkbox" id="tramCheckbox" > Trenes</label>    </div>
-    <!--Map container -->
-    <div id="map"></div>
+        <label><input type="checkbox" id="tramCheckbox" > Trenes</label>    
+    </div>
+    <!--Map container| Hay que configruar las partes por clases para que no se desfasen al cambiar el ancho de la pagina -->
+    <div id="map" class="bloque"> </div>
 
-
+    <div id="titulo">
+        <h1>Los datos</h1>
+    </div>
     <!-- Include the Leaflet library and your JavaScript file -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="js/script.js"></script>
+
+    <div id="sub">
+        <p>Algunos graficos interesantes</p>
+    </div>
 </body>
 </html>

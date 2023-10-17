@@ -25,6 +25,13 @@ body{
 
 /* Style for the filters box on the left */
 
+.bloque{
+    background-color: #3498db;
+    color: #fff;
+    padding: 5px;
+    flex: 1;
+}
+
 #filters {
     width: 15%; /* Adjust the width of the filters box as needed */
     height: 80vh; /* Match the map height */
@@ -37,10 +44,20 @@ body{
     margin: 10px;
     border-style: none;
     border-radius: 20px;
+    color: black;
+}
+/* Parte bajo el mapa*/
+#titulo {
+    background-color: #DEC1E0;
+    color: black;
+    padding: 20px;
+    clear: both;
+    text-align: center;
+}
 
-    
-} 
-
-
-
+#sub{
+    text-align: center;
+    padding: 10px;
+    text-size-adjust: 30px;
+}
     
