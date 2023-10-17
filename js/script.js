@@ -20,12 +20,12 @@ function createMap() {
         zoomControl: false, // Disable zoom control buttons
     });
 
-    var whiteLayer = L.tileLayer('./map_background.png', {
-        maxZoom: 17,
-        scrollY: false,
-    }).addTo(map);
+ //   var whiteLayer = L.tileLayer('./map_background.png', {
+ //       maxZoom: 17,
+ //       scrollY: false,
+ //   }).addTo(map); 
     
-    whiteLayer.setZIndex(1); // Ensure the white layer is on top
+//    whiteLayer.setZIndex(1); // Ensure the white layer is on top
     
 
     return map;
