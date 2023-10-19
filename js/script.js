@@ -1,5 +1,7 @@
 // Initialize the map
 var map = createMap();
+var rentLayer = L.layerGroup();
+
 
 // Add the boundary layer (comuna_limits)
 addBoundaryLayer(map).then(function (comunaLayer) {
@@ -9,8 +11,9 @@ addBoundaryLayer(map).then(function (comunaLayer) {
 });
 
 // Load and display GTFS lines
-loadAndDisplayGTFSLines(map);
+loadGTFSLines(map);
 
+loadRentPrices();
 
 // Function to create the map
 function createMap() {
@@ -42,7 +45,7 @@ function addBoundaryLayer(map) {
         .then(function (data) {
             var comunaLayer = L.geoJSON(data, {
                 style: {
-                    fill: false,   // No fill color
+                    fill: null,   // No fill color
                     color: 'black', // Boundary color
                     weight: 2,     // Boundary line weight
                 },
@@ -57,7 +60,7 @@ function addBoundaryLayer(map) {
 
 
 // Function to load and display GTFS lines
-function loadAndDisplayGTFSLines(map) {
+function loadGTFSLines(map) {
     fetch('data/public_transport_routes/MyAgency/MyAgency.geojson') 
         .then(function (response) {
             return response.json();
@@ -159,7 +162,6 @@ function highlightComunaArea(map, comunaLayer){
 
 function clickeableComuna(map, comunaLayer){
     map.on('click', function (e) {
-        // Get the clicked coordinates
         var latlng = e.latlng;
     
         comunaLayer.eachLayer(function (layer) {
@@ -177,5 +179,44 @@ function clickeableComuna(map, comunaLayer){
     });
 }
 
+function loadRentPrices() {
+    fetch('./data/rent_prices/rent_prices.json')
+      .then(response => response.json())
+      .then(data => {
+        // Iterate through each line (record) and process it
+        data.forEach(data => {
+            if(data.region == "Rm (metropolitana)"){
+                var price = data.precio;
+
+                // Define a function to set dot color based on price
+                var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([10000, 1000000]);
+                
+                var dot = L.circleMarker([data.latitude, data.longitude], {
+                    radius: 1, 
+                    color: colorScale(price), 
+                    weight: 1, 
+                    fillColor: colorScale(price),
+                    fillOpacity: 0.8 
+                });
+                rentLayer.addLayer(dot);
+
+            } 
+        
+            });
+        document.getElementById('rentCheckbox').addEventListener('change', function () {
+            var checkbox = document.getElementById('rentCheckbox');
+            if(checkbox.checked){
+                rentLayer.addTo(map);
+            }
+            else{
+                rentLayer.remove();
+            }
+        });
+        
+      })
+      .catch(error => {
+        console.error('Error loading data:', error);
+      });
+  }
 
 
