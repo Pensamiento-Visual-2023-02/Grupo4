@@ -1,7 +1,7 @@
 // Initialize the map
 var map = createMap();
 var rentLayer = L.layerGroup();
-
+var transportLayer = L.layerGroup();
 
 // Add the boundary layer (comuna_limits)
 addBoundaryLayer(map).then(function (comunaLayer) {
@@ -14,6 +14,8 @@ addBoundaryLayer(map).then(function (comunaLayer) {
 loadGTFSLines(map);
 
 loadRentPrices();
+
+createEventListeners();
 
 // Function to create the map
 function createMap() {
@@ -70,22 +72,9 @@ function loadGTFSLines(map) {
                 return feature.properties.agency_id === 'M' || feature.properties.agency_id === 'RM' || feature.properties.agency_id === 'MT';
             });
 
-            // Create a GeoJSON layer with different line styles
-            var lineLayer = createLineLayer(lineFeatures);
-            lineLayer.addTo(map);
+            transportLayer = createLineLayer(lineFeatures);
+            transportLayer.addTo(map);
 
-            // Event listeners for checkboxes
-            document.getElementById('metroCheckbox').addEventListener('change', function () {
-                updateLineVisibility('metroCheckbox', 'M', lineLayer);
-            });
-
-            document.getElementById('busCheckbox').addEventListener('change', function () {
-                updateLineVisibility('busCheckbox', 'RM', lineLayer);
-            });
-
-            document.getElementById('tramCheckbox').addEventListener('change', function () {
-                updateLineVisibility('tramCheckbox', 'MT', lineLayer);
-            });
         });
 }
 
@@ -172,7 +161,7 @@ function clickeableComuna(map, comunaLayer){
             );
             
             if (isWithinBoundary) {
-                var comunaName = layer.feature.properties.NOM_COM; // Get the comuna name
+                var comunaName = layer.feature.properties.NOM_COM; 
                 window.location.href = `comuna.html?comuna=${comunaName}`;
             }
         });
@@ -203,7 +192,28 @@ function loadRentPrices() {
             } 
         
             });
-        document.getElementById('rentCheckbox').addEventListener('change', function () {
+        
+      })
+      .catch(error => {
+        console.error('Error loading data:', error);
+      });
+  }
+
+function createEventListeners(){
+    // Event listeners for checkboxes
+    document.getElementById('metroCheckbox').addEventListener('change', function () {
+        updateLineVisibility('metroCheckbox', 'M', transportLayer);
+    });
+
+    document.getElementById('busCheckbox').addEventListener('change', function () {
+        updateLineVisibility('busCheckbox', 'RM', transportLayer);
+    });
+
+    document.getElementById('tramCheckbox').addEventListener('change', function () {
+        updateLineVisibility('tramCheckbox', 'MT', transportLayer);
+    });
+
+    document.getElementById('rentCheckbox').addEventListener('change', function () {
             var checkbox = document.getElementById('rentCheckbox');
             if(checkbox.checked){
                 rentLayer.addTo(map);
@@ -212,11 +222,4 @@ function loadRentPrices() {
                 rentLayer.remove();
             }
         });
-        
-      })
-      .catch(error => {
-        console.error('Error loading data:', error);
-      });
-  }
-
-
+}
