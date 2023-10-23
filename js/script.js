@@ -3,6 +3,7 @@ var map = createMap();
 var rentLayer = L.layerGroup();
 var transportLayer = L.layerGroup();
 
+
 // Add the boundary layer (comuna_limits)
 addBoundaryLayer(map).then(function (comunaLayer) {
     highlightComunaArea(map, comunaLayer);
@@ -25,15 +26,18 @@ function createMap() {
         zoomControl: false, // Disable zoom control buttons
     });
 
- //   var whiteLayer = L.tileLayer('./map_background.png', {
- //       maxZoom: 17,
- //       scrollY: false,
- //   }).addTo(map); 
-    
-//    whiteLayer.setZIndex(1); // Ensure the white layer is on top
-    
-
     return map;
+}
+function readComunasFile(callback) {
+    var fr = new FileReader();
+
+    fr.onload = function(event) {
+        var comunas_text = event.target.result;
+        var comunas_array = comunas_text.split('\n');
+        callback(comunas_array); // Call the callback with the result
+    };
+
+    fr.readAsText('data/RM_comunas/RM_comunas.txt');
 }
 
 
@@ -45,12 +49,46 @@ function addBoundaryLayer(map) {
             return response.json();
         })
         .then(function (data) {
-            var comunaLayer = L.geoJSON(data, {
-                style: {
-                    fill: null,   // No fill color
-                    color: 'black', // Boundary color
-                    weight: 2,     // Boundary line weight
-                },
+
+            const comunasString = "Cerrillos	Cerro Navia	Conchalí	El Bosque	Estación Central	Huechuraba	Independencia	La Cisterna	La Florida	La Granja	La Pintana	La Reina	Las Condes	Lo Barnechea	Lo Espejo	Lo Prado	Macul	Maipú	Ñuñoa	Padre Hurtado	Pedro Aguirres Cerda	Peñalolén	Pirque	Providencia	Pudahuel	Puente Alto	Quilicura	Quinta Normal	Recoleta	Renca	San Joaquín	San Miguel	San Ramón	Santiago	Vitacura";
+
+            // Split the string into an array using the tab character as the delimiter
+            const comunas_array = comunasString.split('\t');
+
+
+            console.log(comunas_array);
+            console.log(data);
+            var RM_data = data.features.filter(function (feature) {
+                const comuna_name = feature.properties.NOM_COM;
+                const index = comunas_array.indexOf(comuna_name);
+
+                if (index > -1) {
+                    console.log(comuna_name);
+                    comunas_array.splice(index, 1);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            console.log(comunas_array);
+
+
+            var comunaLayer = L.geoJSON(RM_data, {
+                style: function (feature) {
+                    if (feature.properties.NOM_COM === "San Bernardo") {
+                        return {
+                            fill: 'red',
+                            color: 'black',
+                            weight: 2
+                        };
+                    } else {
+                        return {
+                            fill: null,
+                            color: 'black',
+                            weight: 2
+                        };
+                    }
+                }
             });
 
             comunaLayer.addTo(map); 
