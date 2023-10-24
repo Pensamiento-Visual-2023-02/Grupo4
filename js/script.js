@@ -5,14 +5,19 @@ var transportLayer = L.layerGroup();
 
 
 // Add the boundary layer (comuna_limits)
-addBoundaryLayer(map).then(function (comunaLayer) {
-    highlightComunaArea(map, comunaLayer);
-    clickeableComuna(map, comunaLayer);
+addBoundaryLayer().then(function (comunaLayer) {
+
+    getComunaInfo().then(function (comunaJSON) {
+        highlightComunaArea(comunaLayer, comunaJSON);
+        clickeableComuna(comunaLayer);
+        createEventListenerColorMap(comunaJSON, comunaLayer);
+    });
     
 });
 
+
 // Load and display GTFS lines
-loadGTFSLines(map);
+loadGTFSLines();
 
 loadRentPrices();
 
@@ -21,78 +26,47 @@ createEventListeners();
 // Function to create the map
 function createMap() {
     var map = L.map('map', {
-        center: [-33.6, -70.6693],
-        zoom: 8.5,
+        center: [-33.5, -70.6693],
+        zoom: 10,
         zoomControl: false, // Disable zoom control buttons
     });
 
     return map;
 }
-function readComunasFile(callback) {
-    var fr = new FileReader();
-
-    fr.onload = function(event) {
-        var comunas_text = event.target.result;
-        var comunas_array = comunas_text.split('\n');
-        callback(comunas_array); // Call the callback with the result
-    };
-
-    fr.readAsText('data/RM_comunas/RM_comunas.txt');
-}
 
 
 
 // Function to add the boundary layer (comuna_limits)
-function addBoundaryLayer(map) {
+function addBoundaryLayer() {
     return fetch('data/region_metropolitana_de_santiago/all.geojson') 
         .then(function (response) {
             return response.json();
         })
         .then(function (data) {
 
-            const comunasString = "Cerrillos	Cerro Navia	Conchalí	El Bosque	Estación Central	Huechuraba	Independencia	La Cisterna	La Florida	La Granja	La Pintana	La Reina	Las Condes	Lo Barnechea	Lo Espejo	Lo Prado	Macul	Maipú	Ñuñoa	Padre Hurtado	Pedro Aguirres Cerda	Peñalolén	Pirque	Providencia	Pudahuel	Puente Alto	Quilicura	Quinta Normal	Recoleta	Renca	San Joaquín	San Miguel	San Ramón	Santiago	Vitacura";
+            var comunas_array = ",Cerrillos,Cerro Navia,Conchalí,El Bosque,Estación Central,Huechuraba,Independencia,La Cisterna,La Florida,La Granja,La Pintana,La Reina,Las Condes,Lo Barnechea,Lo Espejo,Lo Prado,Macul,Maipú,Ñuñoa,Padre Hurtado,Pedro Aguirre Cerda,Peñalolén,Pirque,Providencia,Pudahuel,Puente Alto,Quilicura,Quinta Normal,Recoleta,Renca,San Joaquín,San Miguel,San Ramón,Santiago,Vitacura, ".split(","); // Split string into array of strings, using comma as separator
 
-            // Split the string into an array using the tab character as the delimiter
-            const comunas_array = comunasString.split('\t');
-
-
-            console.log(comunas_array);
-            console.log(data);
             var RM_data = data.features.filter(function (feature) {
                 const comuna_name = feature.properties.NOM_COM;
                 const index = comunas_array.indexOf(comuna_name);
 
                 if (index > -1) {
-                    console.log(comuna_name);
                     comunas_array.splice(index, 1);
                     return true;
                 } else {
                     return false;
                 }
             });
-            console.log(comunas_array);
-
 
             var comunaLayer = L.geoJSON(RM_data, {
-                style: function (feature) {
-                    if (feature.properties.NOM_COM === "San Bernardo") {
-                        return {
-                            fill: 'red',
-                            color: 'black',
-                            weight: 2
-                        };
-                    } else {
-                        return {
-                            fill: null,
-                            color: 'black',
-                            weight: 2
-                        };
-                    }
-                }
+                style: {
+                        fillColor: 'aliceblue', // Default color
+                        color: 'black',
+                        weight: 2
+                    }    
+                
             });
-
             comunaLayer.addTo(map); 
-
             return comunaLayer;
 
         });
@@ -100,7 +74,7 @@ function addBoundaryLayer(map) {
 
 
 // Function to load and display GTFS lines
-function loadGTFSLines(map) {
+function loadGTFSLines() {
     fetch('data/public_transport_routes/MyAgency/MyAgency.geojson') 
         .then(function (response) {
             return response.json();
@@ -143,10 +117,12 @@ function updateLineVisibility(checkboxId, lineType, lineLayer) {
         }
     });
 }
-
-
-function highlightComunaArea(map, comunaLayer){
+function highlightComunaArea(comunaLayer, comunaJSON) {
     var highlightedLayer = null;
+    var tooltip = L.DomUtil.create('div', 'leaflet-tooltip'); // Create a tooltip div
+    tooltip.style.display = 'none';
+    document.getElementById('map').appendChild(tooltip); // Append it to the map container
+
     map.on('mousemove', function (e) {
         // Get the clicked coordinates
         var latlng = e.latlng;
@@ -162,32 +138,44 @@ function highlightComunaArea(map, comunaLayer){
 
             if (isWithinBoundary) {
                 isWithinAnyBoundary = true;
-                // Highlight the layer by changing the boundary color
                 layer.setStyle({
                     weight: 4
                 });
                 highlightedLayer = layer;
+
+                // Show the comuna name in the tooltip
+                tooltip.innerHTML = layer.feature.properties.NOM_COM + "<br>" + getCurrentInfo(comunaJSON, layer.feature.properties.NOM_COM);
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.originalEvent.pageX ) - 360 + 'px';
+                tooltip.style.top = (e.originalEvent.pageY) + 'px';
             } else {
                 // Restore default boundary color for other layers
                 layer.setStyle({
                     weight: 2
                 });
-                
             }
-    });
-
-    // Reset the highlighted layer if the mouse is not within any boundary
-    if (!isWithinAnyBoundary && highlightedLayer) {
-        highlightedLayer.setStyle({
-            weight: 0.5
         });
-        highlightedLayer = null;
-    }
 
+        // Hide the tooltip if the mouse is not within any boundary
+        if (!isWithinAnyBoundary) {
+            tooltip.style.display = 'none';
+        }
     });
 }
 
-function clickeableComuna(map, comunaLayer){
+function getCurrentInfo(comunaJSON, comunaName){
+    const attribute = document.getElementById('mapview').value;
+    console.log(attribute)
+    if (attribute == ""){
+        return "";
+    }
+    const value = comunaJSON[attribute][comunaName];
+    return `${attribute}: ${value}`;
+
+    
+}
+
+function clickeableComuna(comunaLayer){
     map.on('click', function (e) {
         var latlng = e.latlng;
     
@@ -237,6 +225,33 @@ function loadRentPrices() {
       });
   }
 
+function getComunaInfo() {
+    return fetch('data/data_per_comuna/data_per_comuna.csv') 
+        .then(function (response) {
+            return response.text();
+        })
+        .then(function (data) {
+            const rows = data.trim().split('\n');
+            const columns = rows[0].split(',');
+            const jsonData = {};
+
+            for (let i = 1; i < rows.length; i++) {
+                const values = rows[i].split(',');
+                const obj = {};
+                for (let j = 1; j < columns.length; j++) {
+                    obj[columns[j]] = values[j];
+                }
+                jsonData[values[0]] = obj;
+            }
+            return jsonData;
+        });
+
+            
+
+}
+
+
+
 function createEventListeners(){
     // Event listeners for checkboxes
     document.getElementById('metroCheckbox').addEventListener('change', function () {
@@ -260,4 +275,51 @@ function createEventListeners(){
                 rentLayer.remove();
             }
         });
+ 
+    
 }
+
+function createEventListenerColorMap(comunaJSON, comunaLayer){
+    document.getElementById('mapview').addEventListener('change', function() {
+        const selectedAttribute = this.value;
+        var colorScale = getColorScaleForAttribute(selectedAttribute, comunaJSON);
+
+        comunaLayer.eachLayer(function (layer) {
+            const comunaName = layer.feature.properties.NOM_COM;
+            const value = comunaJSON[selectedAttribute][comunaName];
+
+            layer.setStyle({
+                fillColor: colorScale(value)
+            });
+                
+            });
+        });
+        
+}
+
+function getColorScaleForAttribute(attribute, comunaJSON) {
+
+    const colorRanges = {
+        "Total Poblacion": ['white', '#9d201c'],
+        "Total viviendas": ['white', '#0175be'],
+        "Hombres": ['white', '#11613c'],
+        "Mujeres": ['white', '#023b8c'],
+        "Homicidios": ['white', '#3a4c58'],
+    };
+    // Get the range of values for the selected attribute
+    const attributeValues = Object.values(comunaJSON[attribute]);
+    const minValue = Math.min(...attributeValues);
+    const maxValue = Math.max(...attributeValues);
+
+    const range = colorRanges[attribute];
+    console.log(range)
+
+    // Define a color scale based on the range of attribute values
+    const colorScale = d3.scaleLinear()
+        .domain([minValue, maxValue])
+        .range(range);
+
+    return colorScale;
+}
+
+
