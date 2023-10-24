@@ -15,8 +15,6 @@ addBoundaryLayer().then(function (comunaLayer) {
     
 });
 
-
-// Load and display GTFS lines
 loadGTFSLines();
 
 loadRentPrices();
@@ -143,20 +141,17 @@ function highlightComunaArea(comunaLayer, comunaJSON) {
                 });
                 highlightedLayer = layer;
 
-                // Show the comuna name in the tooltip
                 tooltip.innerHTML = layer.feature.properties.NOM_COM + "<br>" + getCurrentInfo(comunaJSON, layer.feature.properties.NOM_COM);
                 tooltip.style.display = 'block';
-                tooltip.style.left = (e.originalEvent.pageX ) - 360 + 'px';
+                tooltip.style.left = (e.originalEvent.pageX ) - 430 + 'px';
                 tooltip.style.top = (e.originalEvent.pageY) + 'px';
             } else {
-                // Restore default boundary color for other layers
                 layer.setStyle({
                     weight: 2
                 });
             }
         });
 
-        // Hide the tooltip if the mouse is not within any boundary
         if (!isWithinAnyBoundary) {
             tooltip.style.display = 'none';
         }
@@ -284,7 +279,10 @@ function createEventListenerColorMap(comunaJSON, comunaLayer){
 
         comunaLayer.eachLayer(function (layer) {
             const comunaName = layer.feature.properties.NOM_COM;
-            const value = comunaJSON[selectedAttribute][comunaName];
+            var value = comunaJSON[selectedAttribute][comunaName];
+            if (selectedAttribute == "Porcentaje de población dentro del 40% de menores ingresos (2021)"){
+                value = parseFloat(value.slice(0, -1));
+            }
 
             layer.setStyle({
                 fillColor: colorScale(value)
@@ -303,12 +301,23 @@ function getColorScaleForAttribute(attribute, comunaJSON) {
         "Hombres": ['white', '#11613c'],
         "Mujeres": ['white', '#023b8c'],
         "Homicidios": ['white', '#3a4c58'],
+        "Porcentaje de población dentro del 40% de menores ingresos (2021)": ['white', '#9d201c'],
     };
-    const attributeValues = Object.values(comunaJSON[attribute]);
-    const minValue = Math.min(...attributeValues);
-    const maxValue = Math.max(...attributeValues);
+    var attributeValues = Object.values(comunaJSON[attribute]);
+    if (attribute == "Porcentaje de población dentro del 40% de menores ingresos (2021)"){
+        attributeValues = Object.values(comunaJSON[attribute]).map(value => parseFloat(value.slice(0, -1))).slice(0, -1);
+    }
+
+
+    var minValue = Math.min(...attributeValues);
+    var maxValue = Math.max(...attributeValues);
+    console.log(attributeValues);
+    console.log(maxValue);
+    console.log(minValue);
+
 
     const range = colorRanges[attribute];
+    console.log(range);
     
     const colorScale = d3.scaleLinear()
         .domain([minValue, maxValue])
