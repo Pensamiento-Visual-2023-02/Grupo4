@@ -59,7 +59,7 @@ function addBoundaryLayer() {
             var comunaLayer = L.geoJSON(RM_data, {
                 style: {
                         fillColor: 'aliceblue', // Default color
-                        color: 'black',
+                        color: 'grey',
                         weight: 2
                     }    
                 

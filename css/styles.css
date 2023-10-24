@@ -1,31 +1,40 @@
 /* Estilo pagina completa */
 body{
-    background-color: aliceblue;
+    background-color: #f2f2f2;
     font-family: 'Manrope', sans-serif;
 }
 /* Estilo encabezado*/
-/*
-#titulo {
-    height: 100px;
+
+#Encabezado {
+    height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #1b2b45;
+    background-color: #006881;
     font: bold;
-    color: #f0f8ff;
-}*/
+    color: #000;
+    font-size: 28px;
+}
+
+#Intro{
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+}
+
 #section1{
     height: 100vh;
     display: flex;
     flex-direction: row;
-    background-color: aliceblue;
+    background-color: f2f2f2;
     margin: 0;
+    font-size: 18px;
 }
 
 #section2{
     height: 100vh;
-    background-color: aliceblue;
+    background-color: #f2f2f2;
     margin: 0;
 }
 /* Esta parte define por bloques horizontales al mapa y la caja de filtros*/
@@ -38,9 +47,14 @@ body{
 /* Left sidebar for filters (15%) */
 #filters {
     flex: 20%; /* 15% of the available width */
-    background-color: #DEC1E0;
+    background-color: #cacaca;
     float: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     border-style: none;
+    text-align: center;
     border-radius: 20px;
     color: black;
     height: 70%; /* Adjust the height as needed */
@@ -51,13 +65,13 @@ body{
 /* Right section for the map (85%) */
 #map {
     flex: 85; /* 85% of the available width */
-    background-color: aliceblue; /* Adjust styling as needed */
+    background-color: #f2f2f2; /* Adjust styling as needed */
 }
 
 
 /* Parte bajo el mapa*/
 #titulo {
-    background-color: #f0ced1;
+    background-color: #cacaca;
     color: black;
     padding: 20px;
     clear: both;
@@ -68,7 +82,7 @@ body{
     text-align: center;
     padding: 10px;
     text-size-adjust: 30px;
-    background-color: white;
+    background-color: #f2f2f2;
 }
     
 .leaflet-tooltip {
