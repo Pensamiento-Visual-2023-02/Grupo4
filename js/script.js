@@ -165,7 +165,6 @@ function highlightComunaArea(comunaLayer, comunaJSON) {
 
 function getCurrentInfo(comunaJSON, comunaName){
     const attribute = document.getElementById('mapview').value;
-    console.log(attribute)
     if (attribute == ""){
         return "";
     }
@@ -203,7 +202,6 @@ function loadRentPrices() {
             if(data.region == "Rm (metropolitana)"){
                 var price = data.precio;
 
-                // Define a function to set dot color based on price
                 var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([10000, 1000000]);
                 
                 var dot = L.circleMarker([data.latitude, data.longitude], {
@@ -306,15 +304,12 @@ function getColorScaleForAttribute(attribute, comunaJSON) {
         "Mujeres": ['white', '#023b8c'],
         "Homicidios": ['white', '#3a4c58'],
     };
-    // Get the range of values for the selected attribute
     const attributeValues = Object.values(comunaJSON[attribute]);
     const minValue = Math.min(...attributeValues);
     const maxValue = Math.max(...attributeValues);
 
     const range = colorRanges[attribute];
-    console.log(range)
-
-    // Define a color scale based on the range of attribute values
+    
     const colorScale = d3.scaleLinear()
         .domain([minValue, maxValue])
         .range(range);
