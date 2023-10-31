@@ -6,15 +6,17 @@ body{
 /* Estilo encabezado*/
 
 #Encabezado {
-    height: 140px;
+    height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #006881;
+    background-color: #0175be;
     font: bold;
-    color: #000;
-    font-size: 28px;
+    color: #f2f2f2;
+    font-size: 24px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
 }
 
 #Intro{
@@ -26,17 +28,12 @@ body{
 #section1{
     height: 100vh;
     display: flex;
-    flex-direction: row;
     background-color: f2f2f2;
     margin: 0;
     font-size: 18px;
 }
 
-#section2{
-    height: 100vh;
-    background-color: #f2f2f2;
-    margin: 0;
-}
+
 /* Esta parte define por bloques horizontales al mapa y la caja de filtros*/
 .bloque1{
     float: left;
@@ -48,18 +45,20 @@ body{
 #filters {
     flex: 15%; /* 15% of the available width */
     background-color: #cacaca;
-    float: left;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-style: none;
     text-align: center;
     border-radius: 20px;
     color: black;
-    height: 70%; /* Adjust the height as needed */
+    height: 60%; /* Adjust the height as needed */
     align-self: center;
-    margin: 2px 1px;
+    margin-top: 20px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15)
+}
+
+.content{
+    display: inline-block;
 }
 
 /* Right section for the map (85%) */
@@ -108,12 +107,15 @@ body{
 #mapview{
     width: 70%;
 }
+
 #legend{
     color: black;
     padding: 20px;
     clear: both;
     text-align: center;
     font-size: 18px;
+    display: flex;
+    
 }
 
 
