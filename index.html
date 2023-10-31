@@ -27,7 +27,12 @@
                     <label><input type="checkbox" id="busCheckbox" > Bus</label>
                     <label><input type="checkbox" id="tramCheckbox" > Trenes</label>
                     <h3>Alquiler de departamentos</h3>
-                    <label><input type="checkbox" id="rentCheckbox" > Valores de alquiler</label><br>    
+                    <label><input type="checkbox" id="rentCheckbox" > Valores de alquiler</label>
+                    <div id="rentRangeValue" style="display: none;">
+                        <label for="rentRange">Rango de alquiler:  </label>
+                        <input type="range" id="rentRange" name="rentRange" min="0" max="100" step="1">
+                    </div>
+                    
                     <h3>Explora las vistas del mapa:</h3>
                     <select id="mapview" name="mapview">
                         <option value="" selected >Nada</option>

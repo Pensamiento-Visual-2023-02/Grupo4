@@ -1,6 +1,6 @@
 /* Estilo pagina completa */
 body{
-    background-color: #f2f2f2;
+    background-color: #ffffff;
     font-family: 'Manrope', sans-serif;
 }
 /* Estilo encabezado*/
@@ -65,7 +65,7 @@ body{
 /* Right section for the map (85%) */
 #map {
     flex: 85; /* 85% of the available width */
-    background-color: #f2f2f2; /* Adjust styling as needed */
+    background-color: #ffff; /* Adjust styling as needed */
 }
 
 
@@ -82,7 +82,7 @@ body{
     text-align: center;
     padding: 10px;
     text-size-adjust: 30px;
-    background-color: #f2f2f2;
+    background-color: #ffffff;
 }
     
 .leaflet-tooltip {

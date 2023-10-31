@@ -210,7 +210,7 @@ function loadRentPrices() {
                 const range = ['yellow', `rgb(${1}, ${117}, ${190})`]
 
                 var colorScale = d3.scaleLinear()
-                .domain([150000.0, 4500000.0])
+                .domain([150000.0, 1500000.0])
                 .range(range)
                 .clamp(true);
                 
@@ -307,13 +307,16 @@ function createEventListeners(){
     });
 
     document.getElementById('rentCheckbox').addEventListener('change', function () {
+            const rangeContainer = document.getElementById("rentRangeValue");
 
             var checkbox = document.getElementById('rentCheckbox');
             if(checkbox.checked){
                 rentLayer.addTo(map);
+                rangeContainer.style.display = "block";
             }
             else{
                 rentLayer.remove();
+                rangeContainer.style.display = "none";
             }
         });
  
