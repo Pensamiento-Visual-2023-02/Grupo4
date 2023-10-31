@@ -62,12 +62,18 @@ body{
     margin: 2px 1px;
 }
 
+
+
+#rentRangeMax {
+    background-color: #ffff; /* Change to the color you desire */
+}
+
+
 /* Right section for the map (85%) */
 #map {
     flex: 85; /* 85% of the available width */
     background-color: #ffff; /* Adjust styling as needed */
 }
-
 
 /* Parte bajo el mapa*/
 #titulo {

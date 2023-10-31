@@ -2,7 +2,7 @@
 var map = createMap();
 var rentLayer = L.layerGroup();
 var transportLayer = L.layerGroup();
-
+var rentFirst = true;
 
 // Add the boundary layer (comuna_limits)
 addBoundaryLayer().then(function (comunaLayer) {
@@ -17,7 +17,6 @@ addBoundaryLayer().then(function (comunaLayer) {
 
 loadGTFSLines();
 
-loadRentPrices();
 
 createEventListeners();
 
@@ -100,11 +99,11 @@ function createLineLayer(features) {
         style: function (feature) {
             switch (feature.properties.agency_id) {
                 case 'MT':
-                    return { color: '#1b2b45', weight: 0 };
+                    return { color: '#344D75', weight: 0  };
                 case 'M':
-                    return { color: '#dd0f0f', weight: 0 };
+                    return { color: '#8D5328', weight: 0 };
                 case 'RM':
-                    return { color: '#fe9553', weight: 0 };
+                    return { color: '#E2C98C', weight: 0 };
             }
         }
     });
@@ -118,6 +117,9 @@ function updateLineVisibility(checkboxId, lineType, lineLayer) {
 
     if (lineType === 'M') {
         weight = 2;
+    }
+    else if (lineType === 'MT') {
+        weight = 0;
     }
 
     lineLayer.eachLayer(function (layer) {
@@ -198,16 +200,18 @@ function clickeableComuna(comunaLayer){
     });
 }
 
-function loadRentPrices() {
+function loadRentPrices(min, max ) {
     
     fetch('./data/rent_prices/rent_prices.json')
       .then(response => response.json())
       .then(data => {
         // Iterate through each line (record) and process it
         data.forEach(data => {
-            if(data.region == "Rm (metropolitana)"){
+            console.log(min, max, data.precio);
+            if(data.region == "Rm (metropolitana)" && parseFloat(data.precio) < max && parseFloat(data.precio) > min){
+                console.log(data.precio);
                 var price = data.precio;
-                const range = ['yellow', `rgb(${1}, ${117}, ${190})`]
+                const range = [`rgb(${255}, ${223}, ${43})`, `rgb(${171}, ${35}, ${84})`]
 
                 var colorScale = d3.scaleLinear()
                 .domain([150000.0, 1500000.0])
@@ -224,31 +228,10 @@ function loadRentPrices() {
 
                 });
                 rentLayer.addLayer(dot);
-
-                // Add a mouseover event listener
-                dot.on('mouseover', function (e) {
-                    // This function will be called when the mouse hovers over the dot
-                    // You can perform actions like changing the dot's style, displaying a tooltip, or any other interaction here
-                    dot.setStyle({ radious: 4 });
-                    tooltip.innerHTML = "hello" + "<br>" + data.direccion;
-                    tooltip.style.display = 'block';
-                    tooltip.style.left = (e.originalEvent.pageX ) - 430 + 'px';
-                    tooltip.style.top = (e.originalEvent.pageY) - 250 + 'px';
-                    console.log("hello");
-                });
-
-                // Add a mouseout event listener
-                dot.on('mouseout', function (e) {
-                    // This function will be called when the mouse moves out of the dot
-                    // You can revert any changes made in the mouseover event here
-                    dot.setStyle({ fillOpacity: 1 });
-                });
-                rentLayer.addLayer(dot);
-
-
             } 
         
             });
+            rentLayer.addTo(map);
         
       })
       .catch(error => {
@@ -292,6 +275,7 @@ function getComunaInfo() {
 
 
 
+
 function createEventListeners(){
     // Event listeners for checkboxes
     document.getElementById('metroCheckbox').addEventListener('change', function () {
@@ -302,21 +286,61 @@ function createEventListeners(){
         updateLineVisibility('busCheckbox', 'RM', transportLayer);
     });
 
-    document.getElementById('tramCheckbox').addEventListener('change', function () {
-        updateLineVisibility('tramCheckbox', 'MT', transportLayer);
-    });
-
     document.getElementById('rentCheckbox').addEventListener('change', function () {
-            const rangeContainer = document.getElementById("rentRangeValue");
+            const rangeContainerMin = document.getElementById("rentRangeValueMin");
+            const rangeContainerMax = document.getElementById("rentRangeValueMax");
+            const rangemin = document.getElementById("rentRangeMin");
+            const rangemax = document.getElementById("rentRangeMax");
+            const minRangeValue = document.getElementById("minRangeValue");
+            const maxRangeValue = document.getElementById("maxRangeValue");
+        
 
             var checkbox = document.getElementById('rentCheckbox');
             if(checkbox.checked){
-                rentLayer.addTo(map);
-                rangeContainer.style.display = "block";
+                rangemin.addEventListener("input", function(){
+                    const min = rangemin.value;
+                    const max = rangemax.value;
+                    minRangeValue.textContent = min;
+                    rentLayer.clearLayers();
+                    loadRentPrices(min, max);
+                });
+                rangemax.addEventListener("input", function(){
+                    rentLayer.clearLayers();
+                    const min = rangemin.value;
+                    const max = rangemax.value;
+                    maxRangeValue.textContent = max;
+
+                    loadRentPrices(min, max);
+                });
+                var legend = document.getElementById("legend");
+                legend.innerHTML = "";
+            
+                var imgElement = document.createElement("img");
+                
+                imgElement.src = `./images/rent.jpeg`;
+            
+                imgElement.width = 350;
+                legend.appendChild(imgElement);
+               
+
+                rangeContainerMin.style.visibility = "visible";
+                rangeContainerMax.style.visibility = "visible";
+                if(rentFirst){
+                    const min = rangemin.value;
+                    const max = rangemax.value;
+                    rentLayer.clearLayers();
+                    loadRentPrices(min, max);
+                    rentFirst = false;
+                }
+
             }
             else{
+                rentFirst = true;
+                rentLayer.clearLayers();
                 rentLayer.remove();
-                rangeContainer.style.display = "none";
+                rangeContainerMin.style.visibility = "hidden"
+                rangeContainerMax.style.visibility = "hidden";
+                
             }
         });
  
@@ -340,7 +364,6 @@ function changeMapColor(comunaJSON, comunaLayer, selectedAttribute){
         var value = comunaJSON[selectedAttribute][comunaName];
         value = parseFloat(value);
         const color = colorScale(value);
-        console.log(color);
 
         layer.setStyle({
             fillColor: color,
@@ -351,7 +374,14 @@ function changeMapColor(comunaJSON, comunaLayer, selectedAttribute){
     legend.innerHTML = "";
 
     var imgElement = document.createElement("img");
-    imgElement.src = `./images/${selectedAttribute}.jpeg`;
+    if (selectedAttribute == "Porcentaje de población dentro del 40% de menores ingresos (2021)"){
+        imgElement.src = './images/Porcentaje.jpeg';
+    }
+    else{
+        imgElement.src = `./images/${selectedAttribute}.jpeg`;
+
+
+    }
     imgElement.width = 350;
     legend.appendChild(imgElement);
 
