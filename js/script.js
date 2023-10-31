@@ -9,7 +9,7 @@ addBoundaryLayer().then(function (comunaLayer) {
 
     getComunaInfo().then(function (comunaJSON) {
         highlightComunaArea(comunaLayer, comunaJSON);
-        clickeableComuna(comunaLayer);
+       // clickeableComuna(comunaLayer);
         createEventListenerColorMap(comunaJSON, comunaLayer);
     });
     
