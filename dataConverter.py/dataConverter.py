@@ -5,10 +5,13 @@ csv_file = './data/rent_prices/rent_prices.csv'
 
 json_data = []
 
+
+
 with open(csv_file, mode='r', newline='') as file:
     csv_reader = csv.DictReader(file)
     for row in csv_reader:
-        json_data.append(row)
+        if row['divisa'] == 'pesos':
+            json_data.append(row)
 
 json_file = './data/rent_prices/rent_prices.json'
 

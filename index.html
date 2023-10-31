@@ -19,31 +19,50 @@
         Haz clic sobre cada mapa y/o graficos o pasa el mouse sobre ellos y descubriras un par de cosas que podrian impresionarte
     </div>
     <div id="section1">
-        <div id="filters" class="bloque1">
-            <div class = 'content'>
-                <label><input type="checkbox" id="metroCheckbox" > Metro</label>
-                <label><input type="checkbox" id="busCheckbox" > Bus</label>
-                <label><input type="checkbox" id="tramCheckbox" > Trenes</label>
-                <label><input type="checkbox" id="rentCheckbox" > Rent Values</label><br>
-                <label for="mapview">Select a view:</label>
-                <select id="mapview" name="mapview">
-                    <option value="" selected disabled>None</option>
-                    <option value="Total Poblacion">Total Poblacion</option>
-                    <option value="Total viviendas">Total viviendas</option>
-                    <option value="Hombres">Hombres</option>
-                    <option value="Mujeres">Mujeres</option>
-                    <option value="Homicidios">Homicidios</option>
-                    <option value="Porcentaje de población dentro del 40% de menores ingresos (2021)">Porcentaje de población dentro del 40% de menores ingresos </option>
+        <div class="bloque1">
+            <div id="filters" >
+                <div class = 'content'>
+                    <h3>Transportes</h3>
+                    <label><input type="checkbox" id="metroCheckbox" > Metro</label>
+                    <label><input type="checkbox" id="busCheckbox" > Bus</label>
+                    <label><input type="checkbox" id="tramCheckbox" > Trenes</label>
+                    <h3>Alquiler de departamentos</h3>
+                    <label><input type="checkbox" id="rentCheckbox" > Valores de alquiler</label><br>    
+                    <h3>Explora las vistas del mapa:</h3>
+                    <select id="mapview" name="mapview">
+                        <option value="" selected >Nada</option>
+                        <option value="Total poblacion">Total Poblacion</option>
+                        <option value="Total viviendas">Total viviendas</option>
+                        <option value="Total hombres">Hombres</option>
+                        <option value="Total mujeres">Mujeres</option>
+                        <option value="Densidad poblacional (personas cada km2)">Densidad poblacional (personas cada km2)</option>
+                        <option value="Robo">Robo</option>
+                        <option value="Violencia intrafamiliar"> Violencia intrafamiliar</option>
+                        <option value="Violaciones">Violaciones </option>
+                        <option value="Homicidios">Homicidios</option>
+                        <option value="Total delitos">Total delitos</option>
+                        <option value="Superficie de areas verdes (m2)">Superficie de areas verdes (m2)</option>
+                        <option value="Promedio de ingresos (2020) ($CLP)">Promedio de ingresos (2020) ($CLP)</option>
+                        <option value="Porcentaje de población dentro del 40% de menores ingresos (2021)">Porcentaje de población dentro del 40% de menores ingresos </option>
+    
+                    </select>
+                </div>
 
-                </select>
 
             </div>
+            <div id = "legend">
+                <img src="images/default.png" alt="Legend" width="300" >
+            </div>
+        
+        
         </div>
+        
         <!--Map container| Hay que configruar las partes por clases para que no se desfasen al cambiar el ancho de la pagina -->
         <div id="map" class="bloque1"> </div>
         
         
     </div>
+    
     <div class="section2">
         <div id="titulo">
             <h1>Los datos</h1>
