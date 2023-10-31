@@ -25,12 +25,18 @@
                     <h3>Transportes</h3>
                     <label><input type="checkbox" id="metroCheckbox" > Metro</label>
                     <label><input type="checkbox" id="busCheckbox" > Bus</label>
-                    <label><input type="checkbox" id="tramCheckbox" > Trenes</label>
                     <h3>Alquiler de departamentos</h3>
                     <label><input type="checkbox" id="rentCheckbox" > Valores de alquiler</label>
-                    <div id="rentRangeValue" style="display: none;">
-                        <label for="rentRange">Rango de alquiler:  </label>
-                        <input type="range" id="rentRange" name="rentRange" min="0" max="100" step="1">
+                    <div id="rentRangeValueMin" style="visibility: hidden; display: block;">
+                        <label for="rentRange" style="font-size: 15px;">Minimo valor de alquiler:  </label>
+                        <input type="range" id="rentRangeMin" name="rentRange" min="150000.0" max="1500000.0" step="10000" value = "150000">
+                        <span id="minRangeValue" style = "font-size: 10px;">150000</span>
+
+                    </div>
+                    <div id="rentRangeValueMax" style="visibility: hidden; display: block;">
+                        <label for="rentRange" style="font-size: 15px;">Maximum valor de alquiler:  </label>
+                        <input type="range" id="rentRangeMax" name="rentRange" min="150000.0" max="1500000.0" step="10000" value="1500000.0">
+                        <span id="maxRangeValue" style = "font-size: 10px;">1500000</span>
                     </div>
                     
                     <h3>Explora las vistas del mapa:</h3>
